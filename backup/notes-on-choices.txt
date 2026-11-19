@@ -1,0 +1,183 @@
+# Pointers for each file
+
+A working reference for editing the garden yourself. One section per
+file: what it's for, what to keep, what to watch. Not rules — judgement
+calls flagged as such.
+
+---
+
+## origin.md
+
+**Purpose:** the "why." The only page that tells the personal story.
+Everything else is evidence or projection.
+
+**Keep:**
+- The short version (3 sentences). It's the only thing a non-clicker sees.
+- The factual tone on the tragedy chain. Stated, not dwelt on.
+- The "silent architect" framing — it earns the thirty years as *work*.
+- The named specifics (poker arena, NLP in Pascal, Termux, Qwen) — they're
+  the evidence of the claim.
+- The closing 4 GB note — it's the memorable fact.
+
+**Watch:**
+- Length. It's ~700 words; if it grows past ~900, move the experiments
+  detail to `projects-index.md` and link.
+- The "felt like nothing" line. It earns the comeback, but it's the one
+  sentence that risks reading as self-pity. Keep or cut on instinct.
+- Any temptation to add *more* backstory. The origin page is one page,
+  not a memoir.
+
+**Edit freely:** order within the "What I built" section; the exact
+experiments named.
+
+---
+
+## meta-system.md
+
+**Purpose:** the pitch. This is the page a funder reads, and the one a
+technical collaborator scrolls.
+
+**Keep:**
+- The opening one-paragraph definition. It's plain-English and it's
+  true — resist jargon here.
+- The novelty sentence: *"not better AI, but a better envelope around
+  the AI."* A funder will repeat this line.
+- The "why it's credible" section. It's the load-bearing proof section.
+- The "Skip it if you don't need it" gate before the architecture
+  section.
+- The constraints section at the end — it's a quiet flex.
+
+**Watch:**
+- "It is built, not proposed" — true of components, not the full
+  consolidation. Keep the status honesty ("the current working system
+  includes…") or add a one-line status note if a reader asks.
+- The forecast teaser at the end currently lands on "platform" (2030).
+  Consider ending it on 2027 ("a working factory") so the front door
+  ends on near-term proof.
+- Internal vocabulary (atoms, packets, archiver). Fine in the technical
+  section; keep it out of the funder sections.
+
+**Edit freely:** the architecture section's depth; the balance of
+funder vs. technical content (but always funder-first).
+
+---
+
+## projects-index.md
+
+**Purpose:** the map. A reader who only reads this page should
+understand the shape of the year's work and where to find it.
+
+**Keep:**
+- The three-field structure per entry (what it is / what it proves /
+  where). The repetition is what makes it scannable.
+- META-SYSTEM first (headline), then the two hosted systems (proof),
+  then the experiments (learning), then the silent years (context).
+- "What it proves" as a distinct field. It's what turns a list into an
+  argument.
+
+**Watch:**
+- MOE description may undersell it if the hub hosts more than one
+  engine. Worth a look before publishing.
+- The poker arena entry. It's the most personal and the most likely to
+  prompt "why is this here?" It's framed as evidence of the silent
+  years — but it's the one to cut if you'd rather it live on Origin
+  only.
+- The experiments entry is grouped, not individually linked. That's
+  right for now; if the YouTube channel gets chapter markers, link
+  specific videos later.
+
+**Edit freely:** number of experiments listed; level of detail per
+entry. The structure should stay.
+
+---
+
+## forecast.md
+
+**Purpose:** the pitch for the future. Its credibility comes from the
+discipline of "proven by year end," not from the ambition.
+
+**Keep:**
+- "Proven by year end" for every year. This is the whole page's
+  credibility.
+- The "Dependency" line per year. It's honest and it stops the forecast
+  from pretending each year stands alone.
+- The closing "AI complexity moves upward" rule.
+- 2026 marked "in progress, on track" — honesty about the current year
+  buys credibility for the later ones.
+
+**Watch:**
+- Each year's claim should be *checkable*, not aspirational. If a claim
+  becomes vague ("matures," "evolves"), sharpen it or move it.
+- The 2030 claim ("platform") is the most ambitious. It's fine as long
+  as the earlier years are proven-by-when, because the reader's trust
+  comes from the pattern, not from 2030 being plausible on its own.
+- If any year slips, update the page. The page says unmet claims will
+  be visible — that promise is the page's value.
+
+**Edit freely:** the specific claims per year, as long as each stays
+checkable and the dependencies stay honest.
+
+---
+
+## cv.md
+
+**Purpose:** the formal record. It points to the PDF and covers what the
+PDF can't.
+
+**Keep:**
+- "What the CV can't show" — names the 2.2, explains it, doesn't
+  dwell. This is the honest paragraph a coach will notice.
+- Skills listed as *current use*, not proficiency claims. Everything
+  listed should be something you're actually using.
+- The bare-facts education line, repeated so a reader who reads only
+  cv.md gets the honest version.
+
+**Watch:**
+- The PDF file must exist at `cv.pdf` and be current. `cv.md` points at
+  it.
+- Skills list should stay honest. If you stop using something, remove
+  it — the credibility comes from "everything here is current."
+- Length. If it grows, move detail to Origin, keep cv.md to the pointer
+  + what the PDF can't show.
+
+**Edit freely:** skills list; the "what the CV can't show" wording.
+
+---
+
+## index.html + style.css
+
+**Purpose:** the shell. Renders `.md` files as pages with hash routing.
+
+**Keep:**
+- The `pages` map — it's the list of files the shell knows about.
+- Hash routing (`#origin`, `#projects`, etc.) — shareable, back-button
+  works.
+- The `.md`-link rewriting (in-page links become hashes automatically).
+- The local-server error message.
+
+**Watch:**
+- Adding a page means editing **both** `nav` and the `pages` map. If you
+  forget one, the link is dead or the page doesn't load.
+- `marked` from CDN is the one external dependency. If you want zero
+  dependencies (in the spirit of your "no dependencies beyond the
+  necessary" rule), download `marked.min.js` into the folder and change
+  the `<script src>` to point at it.
+- The CSS is minimal by design. Add styling sparingly; the garden's
+  register is "considered, not flashy."
+
+**Edit freely:** colours, fonts, spacing. The structure (nav, main,
+content div, hash router) should stay unless you're changing the
+approach.
+
+---
+
+## When to run the final check
+
+Before publishing:
+1. Run `python -m http.server` and click every nav link and every
+   in-page `.md` link. Confirm none are dead.
+2. Check the `cv.pdf` link resolves.
+3. Read each page as a stranger would: does the funder section stand
+   alone? Does the technical section have the depth? Does Origin earn
+   the comeback?
+4. Then run it by me for a final read.

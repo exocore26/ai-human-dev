@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Manager: 4GB</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --panel: #1e1e1e;
+      --text: #e0e0e0;
+      --accent: #7ab893;
+      --danger: #ff7b72;
+      --border: #333333;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 20px;
+      box-sizing: border-box;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-group { display: flex; flex-direction: column; gap: 5px; }
+    .stat { font-size: 0.9rem; font-weight: bold; }
+    .ram-stat { color: var(--accent); }
+    .score-stat { color: #61afef; }
+
+    #game-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      flex: 1;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+    .memory-block {
+      position: absolute;
+      width: 90px;
+      height: 32px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      text-transform: uppercase;
+      /* Removed transition so it vanishes instantly */
+    }
+
+    #overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(18, 18, 18, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 10;
+    }
+    #overlay h1 { margin-bottom: 10px; color: var(--accent); }
+    #overlay p { margin-bottom: 20px; color: var(--text); max-width: 400px; line-height: 1.5; }
+    button {
+      background: var(--accent);
+      color: #121212;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { opacity: 0.9; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="stat-group">
+    <div class="stat ram-stat">RAM: <span id="ram">0</span> / 4096 MB</div>
+  </div>
+  <div class="stat-group" style="text-align: right;">
+    <div class="stat score-stat">ALIGNMENT: <span id="score">0</span></div>
+  </div>
+</header>
+
+<div id="game-container">
+  <div id="overlay">
+    <h1>META-SYSTEM Manager</h1>
+    <p>
+      Click <strong>Good</strong> terms (Contracts, Validation) to resolve them.<br>
+      <strong>DO NOT</strong> click <strong>Bad</strong> terms (Hallucinations, Leaks)!<br><br>
+      Keep RAM low to survive. Keep Alignment high to win.
+    </p>
+    <button onclick="startGame()">Boot System</button>
+  </div>
+</div>
+
+<script>
+  let ram = 0;
+  let alignment = 0;
+  let isPlaying = false;
+  let spawnRate = 1500; // Slower start (was 1200)
+  let lastSpawn = 0;
+  let blocks = [];
+
+  const ramEl = document.getElementById('ram');
+  const scoreEl = document.getElementById('score');
+  const container = document.getElementById('game-container');
+  const overlay = document.getElementById('overlay');
+
+  const badTerms = ['Leak', 'Drift', 'Hallucinate', 'Truncate', 'OOM', 'Misalign'];
+  const goodTerms = ['Contract', 'Validate', 'Telemetry', 'Repair', 'Archive', 'Governance'];
+
+  const goodColors = [
+    { bg: '#7ab893', text: '#121212' },
+    { bg: '#61afef', text: '#121212' },
+    { bg: '#c678dd', text: '#121212' },
+    { bg: '#f0c674', text: '#121212' }
+  ];
+
+  function updateUI() {
+    ramEl.textContent = ram;
+    scoreEl.textContent = alignment;
+
+    if (ram > 3000) ramEl.style.color = 'var(--danger)';
+    else if (ram > 2000) ramEl.style.color = '#f0c674';
+    else ramEl.style.color = 'var(--accent)';
+
+    if (alignment < 0) scoreEl.style.color = 'var(--danger)';
+    else scoreEl.style.color = '#61afef';
+  }
+
+  function createBlock() {
+    const block = document.createElement('div');
+    block.classList.add('memory-block');
+
+    // Slightly lower chance of bad blocks at the start to help the player
+    const isBad = Math.random() < 0.25;
+    const speed = 1.2 + (Math.abs(alignment) / 120);
+
+    if (isBad) {
+      block.textContent = badTerms[Math.floor(Math.random() * badTerms.length)];
+      block.style.backgroundColor = 'var(--danger)';
+      block.style.color = '#121212';
+    } else {
+      block.textContent = goodTerms[Math.floor(Math.random() * goodTerms.length)];
+      const colorObj = goodColors[Math.floor(Math.random() * goodColors.length)];
+      block.style.backgroundColor = colorObj.bg;
+      block.style.color = colorObj.text;
+    }
+
+    const startX = Math.random() * (container.clientWidth - 100);
+    block.style.left = `${startX}px`;
+    block.style.top = `-32px`;
+
+    container.appendChild(block);
+
+    blocks.push({
+      el: block,
+      y: -32,
+      speed: speed,
+      isBad: isBad,
+      clicked: false
+    });
+
+    // Use pointerdown for instant click registration instead of onclick
+    block.addEventListener('pointerdown', function(e) {
+      e.preventDefault(); // Stop text selection or touch scrolling
+      if (!isPlaying || block.clicked) return;
+
+      const b = blocks.find(x => x.el === block);
+      if (b) b.clicked = true;
+
+      if (isBad) {
+        ram += 150;
+        alignment -= 10;
+        block.style.backgroundColor = '#fff';
+        block.textContent = 'FAIL';
+        // Make bad blocks disappear immediately but show the FAIL text briefly
+        block.style.pointerEvents = 'none';
+        setTimeout(() => block.remove(), 200);
+      } else {
+        ram = Math.max(0, ram - 100);
+        alignment += 5;
+        block.remove(); // Vanishes instantly
+      }
+      updateUI();
+    });
+  }
+
+  function gameOver(reason) {
+    isPlaying = false;
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `
+      <h1>${reason}</h1>
+      <p>Final Alignment: <strong>${alignment}</strong></p>
+      <button onclick="startGame()">Reboot</button>
+    `;
+  }
+
+  let lastTime = 0;
+  function gameLoop(timestamp) {
+    if (!isPlaying) return;
+
+    if (timestamp - lastSpawn > spawnRate) {
+      createBlock();
+      lastSpawn = timestamp;
+      // Difficulty increases slowly
+      if (spawnRate > 500) spawnRate -= 20;
+    }
+
+    const delta = (timestamp - lastTime) / 16;
+    lastTime = timestamp;
+
+    for (let i = blocks.length - 1; i >= 0; i--) {
+      let b = blocks[i];
+
+      // If it was clicked but hasn't faded out yet, skip movement
+      if (b.clicked) {
+        if (!document.body.contains(b.el)) blocks.splice(i, 1);
+        continue;
+      }
+
+      b.y += b.speed * delta * (container.clientHeight / 600);
+      b.el.style.top = `${b.y}px`;
+
+      if (b.y > container.clientHeight) {
+        // If a good block hits the bottom, it jams the system (RAM increases)
+        if (!b.isBad) {
+          ram += 200;
+          updateUI();
+        }
+        b.el.remove();
+        blocks.splice(i, 1);
+
+        if (ram >= 4096) {
+          gameOver('System Crash (OOM)');
+          return;
+        }
+
+        if (alignment <= -50) {
+          gameOver('Alignment Failure');
+          return;
+        }
+      }
+    }
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  function startGame() {
+    document.querySelectorAll('.memory-block').forEach(el => el.remove());
+    blocks = [];
+    ram = 0;
+    alignment = 10;
+    spawnRate = 1500; // Reset to slower start
+    lastSpawn = performance.now();
+    lastTime = performance.now();
+    isPlaying = true;
+    overlay.classList.add('hidden');
+    updateUI();
+
+    requestAnimationFrame(gameLoop);
+  }
+</script>
+</body>
+</html>

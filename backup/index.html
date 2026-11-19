@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Human Development — Digital Garden</title>
+  <!-- ?v=3 busts the browser cache. Bump the number whenever you edit style.css. -->
+  <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-title">AI-Human Development</div>
+  <nav aria-label="Main">
+    <a href="#origin" data-page="origin">Origin</a>
+    <a href="#projects" data-page="projects">Projects</a>
+    <a href="#meta-system" data-page="meta-system">META-SYSTEM</a>
+    <a href="#forecast" data-page="forecast">Forecast</a>
+    <a href="#cv" data-page="cv">CV</a>
+    <a href="#game" data-page="game">Game</a>
+    <a href="https://www.youtube.com/@AI-HUMAN-DEV-4GB" target="_blank" rel="noopener">YouTube ↗</a>
+  </nav>
+</header>
+
+<main id="scroll-area">
+  <div id="content">
+    <p class="loading">Loading…</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-left">
+    <span id="clock">00:00:00</span>
+  </div>
+  <div class="footer-right">
+    <span>Contact:</span>
+    <a href="mailto:exocore26@gmail.com" id="email-link">exocore26@gmail.com</a>
+    <button type="button" id="copy-btn">Copy</button>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------
+  // Routing
+  // The URL hash is the page name: #cv loads cv.md.
+  // Only list a page here if its hash differs from its filename.
+  // Anything else falls back to <hash>.md, so new notes need no code.
+  // ---------------------------------------------------------------
+  const ALIASES = {
+    projects: 'projects-index.md'
+  };
+  const DEFAULT_PAGE = 'origin';
+
+  const scrollArea = document.getElementById('scroll-area');
+  const content    = document.getElementById('content');
+  const navLinks   = document.querySelectorAll('nav a[data-page]');
+
+  let loadToken = 0; // lets a newer click cancel an older, slower fetch
+
+  function showMessage(className, html) {
+    content.innerHTML = '<p class="' + className + '">' + html + '</p>';
+  }
+
+  async function loadPage(key) {
+    const token = ++loadToken;
+    const file  = ALIASES[key] || key + '.md';
+
+    showMessage('loading', 'Loading…');
+
+    try {
+      const res = await fetch(file);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      if (token !== loadToken) return; // a newer navigation took over
+
+      content.innerHTML = marked.parse(text);
+
+      // Turn links like [x](runbook.md) into in-page links (#runbook).
+      // Skips full URLs such as https://example.com/readme.md.
+      content.querySelectorAll('a[href$=".md"]').forEach(function (a) {
+        const href = a.getAttribute('href');
+        if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+        const name = href.replace(/^\.?\//, '').replace(/\.md$/, '');
+        const alias = Object.keys(ALIASES).find(function (k) { return ALIASES[k] === href; });
+        a.setAttribute('href', '#' + (alias || name));
+      });
+
+      // Use the note's first heading as the tab title.
+      const h1 = content.querySelector('h1');
+      document.title = (h1 ? h1.textContent + ' — ' : '') + 'AI-Human Development';
+
+      scrollArea.scrollTop = 0; // reset after the new content is in place
+    } catch (err) {
+      if (token !== loadToken) return;
+      content.innerHTML = '';
+      const p = document.createElement('p');
+      p.className = 'error';
+      p.append('Could not load ');
+      const code = document.createElement('code');
+      code.textContent = file;
+      p.append(code, '. Check the file exists, and that you are running ');
+      const cmd = document.createElement('code');
+      cmd.textContent = 'python3 -m http.server';
+      p.append(cmd, ' from this folder.');
+      content.append(p);
+    }
+  }
+
+  function route() {
+    // Only allow simple names, so a hash can never point outside this folder.
+    let key = decodeURIComponent(window.location.hash.slice(1));
+    if (!/^[A-Za-z0-9_-]+$/.test(key)) key = DEFAULT_PAGE;
+
+    navLinks.forEach(function (a) {
+      const active = a.dataset.page === key;
+      a.classList.toggle('active', active);
+      if (active) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+
+    loadPage(key);
+  }
+
+  window.addEventListener('hashchange', route);
+  route();
+
+  // ---------------------------------------------------------------
+  // Footer: live clock
+  // ---------------------------------------------------------------
+  const clock = document.getElementById('clock');
+  function tick() {
+    clock.textContent = new Date().toLocaleTimeString([], { hour12: false });
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ---------------------------------------------------------------
+  // Footer: copy email
+  // ---------------------------------------------------------------
+  const copyBtn = document.getElementById('copy-btn');
+  const email   = document.getElementById('email-link').textContent.trim();
+
+  copyBtn.addEventListener('click', function () {
+    function done(label) {
+      copyBtn.textContent = label;
+      setTimeout(function () { copyBtn.textContent = 'Copy'; }, 2000);
+    }
+    if (!navigator.clipboard) { done('Not supported'); return; }
+    navigator.clipboard.writeText(email).then(
+      function () { done('Copied!'); },
+      function () { done('Failed'); }
+    );
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Manager: 4GB</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --panel: #1e1e1e;
+      --text: #e0e0e0;
+      --accent: #7ab893;
+      --danger: #ff7b72;
+      --border: #333333;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      box-sizing: border-box;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat { font-size: 0.9rem; color: var(--accent); font-weight: bold; }
+    #game-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      flex: 1;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+    .memory-block {
+      position: absolute;
+      width: 60px;
+      height: 30px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s;
+    }
+    .memory-block:active { transform: scale(0.9); }
+    .block-cache { background: var(--accent); color: #121212; }
+    .block-leak { background: var(--danger); color: #121212; }
+    
+    #overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(18, 18, 18, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 10;
+    }
+    #overlay h1 { margin-bottom: 10px; color: var(--accent); }
+    #overlay p { margin-bottom: 20px; color: var(--text); max-width: 400px; line-height: 1.5; }
+    button {
+      background: var(--accent);
+      color: #121212;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { opacity: 0.9; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="stat">RAM: <span id="ram">0</span> / 4096 MB</div>
+  <div class="stat">SCORE: <span id="score">0</span></div>
+</header>
+
+<div id="game-container">
+  <div id="overlay">
+    <h1>Memory Manager</h1>
+    <p>Click <span style="color: var(--accent); font-weight: bold;">Cache</span> blocks to free memory.<br>But DO NOT click <span style="color: var(--danger); font-weight: bold;">Leaks</span>!</p>
+    <button onclick="startGame()">Boot System</button>
+  </div>
+</div>
+
+<script>
+  let ram = 0;
+  let score = 0;
+  let isPlaying = false;
+  let spawnRate = 1200; // milliseconds
+  let lastSpawn = 0;
+  let blocks = [];
+  
+  const ramEl = document.getElementById('ram');
+  const scoreEl = document.getElementById('score');
+  const container = document.getElementById('game-container');
+  const overlay = document.getElementById('overlay');
+
+  function updateUI() {
+    ramEl.textContent = ram;
+    scoreEl.textContent = score;
+    if (ram > 3000) ramEl.style.color = 'var(--danger)';
+    else if (ram > 2000) ramEl.style.color = '#f0c674';
+    else ramEl.style.color = 'var(--accent)';
+  }
+
+  function createBlock() {
+    const block = document.createElement('div');
+    block.classList.add('memory-block');
+    
+    // 25% chance to be a leak
+    const isLeak = Math.random() < 0.25;
+    const speed = 1.5 + (score / 100); // Gets faster with score
+    
+    if (isLeak) {
+      block.classList.add('block-leak');
+      block.textContent = 'Leak';
+    } else {
+      block.classList.add('block-cache');
+      block.textContent = 'Cache';
+    }
+
+    const startX = Math.random() * (container.clientWidth - 70);
+    block.style.left = `${startX}px`;
+    block.style.top = `-30px`;
+    
+    container.appendChild(block);
+
+    // Block object to track state
+    blocks.push({
+      el: block,
+      y: -30,
+      speed: speed,
+      isLeak: isLeak,
+      clicked: false
+    });
+
+    block.onclick = function() {
+      if (!isPlaying || block.clicked) return;
+      
+      // Find this block in our array
+      const b = blocks.find(x => x.el === block);
+      if (b) b.clicked = true;
+
+      if (isLeak) {
+        ram += 150; // Penalty
+        score = Math.max(0, score - 10);
+        block.style.background = '#fff';
+        block.textContent = 'OOM';
+        setTimeout(() => block.remove(), 200); // Small delay so they see it
+      } else {
+        ram = Math.max(0, ram - 100); 
+        score += 10;
+        block.remove();
+      }
+      updateUI();
+    };
+  }
+
+  function gameOver() {
+    isPlaying = false;
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `
+      <h1>System Crash</h1>
+      <p>Out of Memory. You managed a score of ${score}.</p>
+      <button onclick="startGame()">Reboot</button>
+    `;
+  }
+
+  let lastTime = 0;
+  function gameLoop(timestamp) {
+    if (!isPlaying) return;
+
+    // Spawn logic
+    if (timestamp - lastSpawn > spawnRate) {
+      createBlock();
+      lastSpawn = timestamp;
+      // Increase difficulty over time
+      if (spawnRate > 400) spawnRate -= 30; 
+    }
+
+    // Movement logic
+    const delta = (timestamp - lastTime) / 16; // Normalize to ~60fps
+    lastTime = timestamp;
+
+    for (let i = blocks.length - 1; i >= 0; i--) {
+      let b = blocks[i];
+      if (b.clicked) {
+        // If clicked, remove from tracking after the visual delay
+        if (!document.body.contains(b.el)) blocks.splice(i, 1);
+        continue; 
+      }
+
+      b.y += b.speed * delta;
+      b.el.style.top = `${b.y}px`;
+
+      // If it hits the bottom
+      if (b.y > container.clientHeight) {
+        if (!b.isLeak) {
+          ram += 200; // Cache overflow
+          updateUI();
+        }
+        b.el.remove();
+        blocks.splice(i, 1);
+        
+        if (ram >= 4096) {
+          gameOver();
+          return;
+        }
+      }
+    }
+    
+    requestAnimationFrame(gameLoop);
+  }
+
+  function startGame() {
+    document.querySelectorAll('.memory-block').forEach(el => el.remove());
+    blocks = [];
+    ram = 0;
+    score = 0;
+    spawnRate = 1200;
+    lastSpawn = performance.now();
+    lastTime = performance.now();
+    isPlaying = true;
+    overlay.classList.add('hidden');
+    updateUI();
+    
+    requestAnimationFrame(gameLoop);
+  }
+</script>
+</body>
+</html>

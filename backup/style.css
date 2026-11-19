@@ -1,0 +1,226 @@
+:root {
+  --bg:        #121212;
+  --text:      #e0e0e0;
+  --muted:     #9e9e9e;
+  --accent:    #7ab893;
+  --border:    #333333;
+  --code-bg:   #1e1e1e;
+  --error:     #ff7b72;
+  --inline-code: #f0c674;
+
+  --font-body: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
+  --font-ui:   -apple-system, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'SF Mono', Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ===============================================================
+   App layout
+   The page itself never scrolls. Header and footer take their natural
+   height; <main> gets the leftover space and scrolls inside it.
+   minmax(0, 1fr) + min-height: 0 are what let <main> shrink instead of
+   growing to fit a long note.
+   =============================================================== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  height: 100vh;   /* fallback */
+  height: 100dvh;  /* accounts for phone address bars */
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+/* --- Header --- */
+.site-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 1.5rem 0.5rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-title {
+  margin-bottom: 0.8rem;
+  font-family: var(--font-ui);
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.2rem;
+  padding-bottom: 0.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+
+nav a:hover { color: var(--accent); }
+
+/* Current page */
+nav a.active {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+/* --- Scrolling area --- */
+main {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2.5rem 1.5rem;
+}
+
+#content {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* --- Footer --- */
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.footer-right a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#copy-btn {
+  margin-left: 0.4rem;
+  padding: 0.2em 0.6em;
+  background: var(--code-bg);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#copy-btn:hover { background: var(--border); }
+
+/* Keyboard focus */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ===============================================================
+   Markdown content
+   =============================================================== */
+h1, h2, h3 {
+  font-family: var(--font-ui);
+  line-height: 1.25;
+  color: var(--text);
+}
+h1 { margin: 0 0 1.5rem; font-size: 2rem; letter-spacing: -0.02em; }
+h2 { margin: 2.5rem 0 0.75rem; font-size: 1.35rem; color: var(--accent); }
+h3 { margin: 1.75rem 0 0.5rem; font-size: 1.05rem; }
+
+p { margin: 0 0 1.1rem; }
+
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+
+hr { margin: 2.5rem 0; border: none; border-top: 1px solid var(--border); }
+
+blockquote {
+  margin: 1.5rem 0;
+  padding: 0.5rem 0 0.5rem 1.2rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  font-style: italic;
+}
+
+code {
+  padding: 0.12em 0.35em;
+  background: var(--code-bg);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.87em;
+  color: var(--inline-code);
+}
+
+pre {
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+pre code { padding: 0; background: none; font-size: 1em; color: var(--text); }
+
+img { max-width: 100%; height: auto; }
+
+/* Wide tables scroll sideways instead of breaking the layout on phones */
+table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+}
+
+th, td { padding: 0.55rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+th { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+
+ul, ol { margin: 0 0 1.1rem; padding-left: 1.4rem; }
+li { margin-bottom: 0.4rem; }
+
+.loading, .error { color: var(--muted); font-style: italic; }
+.error { color: var(--error); }
+
+/* --- Small screens --- */
+@media (max-width: 600px) {
+  main { padding: 1.5rem 1rem; }
+  h1 { font-size: 1.6rem; }
+}
