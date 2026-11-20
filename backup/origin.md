@@ -13,18 +13,19 @@ I did a BSc in Computing. By the end of second year I had top marks in
 assembly, C++, object-oriented analysis and design, Pascal, and Java. I
 was on a first-class trajectory.
 
-Then a family tragedy chain hit — my sister died, my mum was arrested on
-drug-related charges, and we lost the council home as a result. I became
-homeless, then in private rented accommodation, then forced to work
+Then a family tragedy chain hit — my sister died, my stepmum was arrested
+and we lost the council home as a result. We, as in the family, became
+homeless, then in private rented accommodation I was  forced to work
 menial jobs with my father just to keep the rent paid. I dropped out of
 third year. Deferred for a year. Came back part-time, interrupted. What
 should have been three years took seven and a half, and ended with a 2.2.
 
-I was deflated. It felt like all of it — the GCSE resits, the two years
-of college A-levels, the degree — had come to nothing.
+At the time it had felt like all of it — the GCSE resits, the two years
+of college A-levels to reach the degree and then the degree itself — had 
+amounted to nothing but a waste of nearly 11 years.
 
 But I never stopped thinking about the problem. Over the next thirty
-years, in scraps of paper and idle moments, I kept doing what I'd been
+years, on scraps of paper and idle moments, I kept doing what I'd been
 trained to do: object-oriented analysis of systems I could see clearly
 and couldn't build. A multiplayer poker arena with programmable bots,
 skill-credit training, and levelling metrics. Problem-statement
