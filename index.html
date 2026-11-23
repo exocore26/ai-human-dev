@@ -14,6 +14,7 @@
   <nav aria-label="Main">
     <a href="#origin" data-page="origin">Origin</a>
     <a href="#projects" data-page="projects">Projects</a>
+    <a href="meta-architect.html">Meta-Architect ↗</a>
     <a href="#meta-system" data-page="meta-system">META-SYSTEM</a>
     <a href="#forecast" data-page="forecast">Forecast</a>
     <a href="#cv" data-page="cv">CV</a>
@@ -44,12 +45,6 @@
 (function () {
   'use strict';
 
-  // ---------------------------------------------------------------
-  // Routing
-  // The URL hash is the page name: #cv loads cv.md.
-  // Only list a page here if its hash differs from its filename.
-  // Anything else falls back to <hash>.md, so new notes need no code.
-  // ---------------------------------------------------------------
   const ALIASES = {
     projects: 'projects-index.md'
   };
@@ -59,7 +54,7 @@
   const content    = document.getElementById('content');
   const navLinks   = document.querySelectorAll('nav a[data-page]');
 
-  let loadToken = 0; // lets a newer click cancel an older, slower fetch
+  let loadToken = 0;
 
   function showMessage(className, html) {
     content.innerHTML = '<p class="' + className + '">' + html + '</p>';
@@ -75,12 +70,10 @@
       const res = await fetch(file);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const text = await res.text();
-      if (token !== loadToken) return; // a newer navigation took over
+      if (token !== loadToken) return;
 
       content.innerHTML = marked.parse(text);
 
-      // Turn links like [x](runbook.md) into in-page links (#runbook).
-      // Skips full URLs such as https://example.com/readme.md.
       content.querySelectorAll('a[href$=".md"]').forEach(function (a) {
         const href = a.getAttribute('href');
         if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return;
@@ -89,11 +82,9 @@
         a.setAttribute('href', '#' + (alias || name));
       });
 
-      // Use the note's first heading as the tab title.
       const h1 = content.querySelector('h1');
       document.title = (h1 ? h1.textContent + ' — ' : '') + 'AI-Human Development';
-
-      scrollArea.scrollTop = 0; // reset after the new content is in place
+      scrollArea.scrollTop = 0;
     } catch (err) {
       if (token !== loadToken) return;
       content.innerHTML = '';
@@ -111,7 +102,6 @@
   }
 
   function route() {
-    // Only allow simple names, so a hash can never point outside this folder.
     let key = decodeURIComponent(window.location.hash.slice(1));
     if (!/^[A-Za-z0-9_-]+$/.test(key)) key = DEFAULT_PAGE;
 
@@ -128,9 +118,6 @@
   window.addEventListener('hashchange', route);
   route();
 
-  // ---------------------------------------------------------------
-  // Footer: live clock
-  // ---------------------------------------------------------------
   const clock = document.getElementById('clock');
   function tick() {
     clock.textContent = new Date().toLocaleTimeString([], { hour12: false });
@@ -138,11 +125,8 @@
   tick();
   setInterval(tick, 1000);
 
-  // ---------------------------------------------------------------
-  // Footer: copy email
-  // ---------------------------------------------------------------
   const copyBtn = document.getElementById('copy-btn');
-  const email   = document.getElementById('email-link').textContent.trim();
+  const email = document.getElementById('email-link').textContent.trim();
 
   copyBtn.addEventListener('click', function () {
     function done(label) {

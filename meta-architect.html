@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Meta-Architect: an experimental human-centred AI development environment built around the Architect Control Plane.">
+  <title>Meta-Architect — AI-Human Development</title>
+  <link rel="stylesheet" href="style.css?v=3">
+  <style>
+    /* Case-study layout: uses the garden's existing theme and design tokens. */
+    #case-study { max-width: 980px; margin: 0 auto; }
+    .case-intro { max-width: 760px; margin: 0 auto 2.5rem; }
+    .eyebrow {
+      margin: 0 0 .65rem;
+      color: var(--muted);
+      font: 600 .76rem/1.4 var(--font-ui);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .case-intro h1 { margin-bottom: .65rem; font-size: clamp(2rem, 5vw, 3rem); }
+    .case-deck { max-width: 680px; color: var(--muted); font-size: 1.15rem; }
+    .case-flow {
+      display: flex; flex-wrap: wrap; gap: .5rem; align-items: center;
+      margin: 1.7rem 0 0; color: var(--muted);
+      font: 600 .76rem/1.4 var(--font-ui); letter-spacing: .1em;
+    }
+    .case-flow span { color: var(--accent); }
+    .case-section {
+      margin: 3.5rem 0;
+      padding-top: 2.2rem;
+      border-top: 1px solid var(--border);
+    }
+    .section-kicker {
+      margin: 0 0 .5rem;
+      color: var(--muted);
+      font: 600 .75rem/1.4 var(--font-ui);
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .case-section h2 { margin-top: 0; font-size: clamp(1.45rem, 3vw, 1.9rem); }
+    .case-copy { max-width: 760px; }
+    .case-figure { margin: 2rem auto; }
+    .case-figure img {
+      display: block; width: 100%; height: auto;
+      border: 1px solid var(--border); border-radius: 7px;
+      background: var(--code-bg);
+    }
+    .case-figure figcaption {
+      margin-top: .65rem; color: var(--muted);
+      font: .82rem/1.5 var(--font-ui);
+    }
+    .infographic { max-width: 900px; }
+    .screenshot { max-width: 920px; }
+    .case-callout {
+      margin: 1.8rem 0; padding: 1rem 1.25rem;
+      border-left: 3px solid var(--accent);
+      background: rgba(255,255,255,.035);
+      border-radius: 0 5px 5px 0;
+    }
+    .case-callout p:last-child { margin-bottom: 0; }
+    .role-grid, .activation-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem; margin: 1.5rem 0;
+    }
+    .role-card, .activation-card {
+      padding: 1rem; border: 1px solid var(--border);
+      border-radius: 6px; background: rgba(255,255,255,.02);
+    }
+    .role-card h3, .activation-card h3 {
+      margin: 0 0 .55rem; color: var(--accent); font-size: 1rem;
+    }
+    .role-card p, .activation-card p { margin: 0; font-size: .94rem; }
+    .role-mode {
+      display: block; margin-bottom: .55rem; color: var(--muted);
+      font: 600 .7rem/1.4 var(--font-ui); letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .keyflow {
+      display: flex; flex-wrap: wrap; align-items: center; gap: .55rem;
+      margin: 1.5rem 0; padding: 1rem;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: var(--code-bg);
+      font: 600 .82rem/1.5 var(--font-ui);
+    }
+    .keyflow b { color: var(--accent); }
+    .keyflow .arrow { color: var(--muted); }
+    .activation-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .activation-card strong { color: var(--accent); }
+    .case-end {
+      margin: 3rem 0 1rem; padding: 1.5rem;
+      border: 1px solid var(--border); border-radius: 7px;
+      text-align: center;
+    }
+    .case-end p { margin: 0; }
+    .case-end strong { color: var(--accent); }
+    .case-back { margin-top: 2rem; font: .9rem var(--font-ui); }
+    @media (max-width: 700px) {
+      .role-grid, .activation-grid { grid-template-columns: 1fr; }
+      .case-section { margin: 2.5rem 0; padding-top: 1.7rem; }
+      .keyflow { align-items: flex-start; flex-direction: column; }
+      .keyflow .arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-title">AI-Human Development</div>
+    <nav aria-label="Main">
+      <a href="index.html#origin">Origin</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#meta-system">META-SYSTEM</a>
+      <a href="index.html#forecast">Forecast</a>
+      <a href="index.html#cv">CV</a>
+      <a href="index.html#game">Game</a>
+      <a href="https://www.youtube.com/@AI-HUMAN-DEV-4GB" target="_blank" rel="noopener">YouTube ↗</a>
+    </nav>
+  </header>
+
+  <main id="scroll-area">
+    <article id="case-study">
+      <header class="case-intro">
+        <p class="eyebrow">A project case study · 23 November 2026</p>
+        <h1>Meta-Architect</h1>
+        <p class="case-deck">The Architect Control Plane: a human-centred AI development environment. Three roles. One control plane. A shared knowledge journey.</p>
+        <div class="case-flow" aria-label="Case study sequence">
+          UNDERSTAND <span>→</span> BELIEVE <span>→</span> EXPLORE
+        </div>
+      </header>
+
+      <section class="case-section" id="understand">
+        <p class="section-kicker">01 · Understand</p>
+        <h2>The architecture at a glance</h2>
+        <div class="case-copy">
+          <p>Meta-Architect is an experiment in making AI-assisted development more controlled, observable and accessible. Its Architect Control Plane (ACP) brings together idea capture, focused AI discussion packets, development workflows and knowledge evolution.</p>
+        </div>
+        <figure class="case-figure infographic">
+          <img src="ACP_infographic..png" alt="Conceptual infographic showing the Meta-Architect Architect Control Plane and its roles and processes" loading="lazy">
+          <figcaption>The conceptual overview: the intended relationships and flows within the Architect Control Plane.</figcaption>
+        </figure>
+        <div class="case-copy">
+          <h3>Three roles, deliberately separated</h3>
+          <div class="role-grid">
+            <div class="role-card">
+              <span class="role-mode">AI enabled</span>
+              <h3>Architect</h3>
+              <p>Authors the environment, creates tooling, establishes contracts and governance, and handles AI complexity.</p>
+            </div>
+            <div class="role-card">
+              <span class="role-mode">No AI exposure</span>
+              <h3>Engineer</h3>
+              <p>Uses prepared tools to manage projects, apply patterns and assemble workflows without managing prompts or AI behaviour.</p>
+            </div>
+            <div class="role-card">
+              <span class="role-mode">AI guided</span>
+              <h3>User</h3>
+              <p>Works through structured discussion packets and guided workflows, contributing intent and feedback without carrying the machinery.</p>
+            </div>
+          </div>
+          <div class="case-callout">
+            <p><strong>Management responsibility does not require AI exposure.</strong> The gradient of AI-complexity exposure is a deliberate architectural boundary: complexity is concentrated upstream rather than leaking into the downstream roles.</p>
+          </div>
+          <h3>The governing principle</h3>
+          <p><strong>FaSaP — Functional as Simply as Possible.</strong> The goal is the smallest system that delivers the required functionality reliably: no unnecessary infrastructure, abstraction or engineering for its own sake. The 4GB Dell and freemium constraints are part of the design challenge, not incidental footnotes.</p>
+        </div>
+      </section>
+
+      <section class="case-section" id="believe">
+        <p class="section-kicker">02 · Believe</p>
+        <h2>From conceptual model to working control plane</h2>
+        <div class="case-copy">
+          <p>The architecture is shaped by practical experience with AI failure modes: topic drift, hallucination, truncation and loss of alignment with the intended objective. Meta-Architect does not claim these problems have disappeared. It applies focused sessions, contract-driven packets, role boundaries and governance to contain and manage them.</p>
+          <p>Its keyflow connects individual ideas and discussions to a wider body of work:</p>
+          <div class="keyflow" aria-label="Knowledge evolution keyflow">
+            <b>SPARK CAPTURE</b><span class="arrow">→</span>
+            <b>AI-HITL PACKET GENERATION</b><span class="arrow">→</span>
+            <b>PHASE-CONTROLLED EVOLUTION</b><span class="arrow">→</span>
+            <b>DYNAMIC KNOWLEDGE EVOLUTION</b>
+          </div>
+          <p>The intention is to avoid disconnected chat threads and repeatedly reconstructed context. Discussions have a purpose, boundaries and a relationship to the wider work. Telemetry is beginning to preserve an evidence trail of activity and development history.</p>
+          <div class="case-callout">
+            <p>“I'm no longer just using AI to develop a system. I'm using the system to organise how I use AI to develop the system.”</p>
+          </div>
+        </div>
+        <figure class="case-figure screenshot">
+          <img src="ACP_screenshot.png" alt="Screenshot of the Meta-Architect Architect Control Plane running in its working environment" loading="lazy">
+          <figcaption>The running control plane. This screenshot evidences the working environment; the infographic above remains the conceptual overview. Individual flows and capabilities continue to evolve.</figcaption>
+        </figure>
+        <div class="case-copy">
+          <p>Telemetry has a second purpose beyond operational visibility: it is the early material for a self-describing development history. The longer-term aim is to weave that history into a reconstruction of how the system came into being, potentially including retrospective documentation and build-story videos. The system is beginning to record the evidence from which its own evolution can be told.</p>
+        </div>
+      </section>
+
+      <section class="case-section" id="explore">
+        <p class="section-kicker">03 · Explore</p>
+        <h2>Activation — from intent to genesis</h2>
+        <div class="case-copy">
+          <p>Activation is a lightweight assignment engine that turns an intention into a structured, traceable starting point for work. It creates assignments for any of the three roles and gives each new piece of work a destination, an initial artefact and a recorded origin.</p>
+          <h3>Three dimensions shape an assignment</h3>
+          <div class="activation-grid">
+            <div class="activation-card">
+              <h3>Assignment form</h3>
+              <p><strong>Tool · Interface · Process · Data</strong><br>The kind of thing being created.</p>
+            </div>
+            <div class="activation-card">
+              <h3>Shaping function</h3>
+              <p><strong>Builder · Packager · Admin · Dispatch</strong><br>The function shaping the assignment.</p>
+            </div>
+            <div class="activation-card">
+              <h3>Role &amp; workspace</h3>
+              <p><strong>Architect · Engineer · User</strong><br>Who owns the work and where it belongs.</p>
+            </div>
+          </div>
+          <p>These dimensions form a configurable assignment tuple in a dynamic data structure. Activation loads the selected role's existing directory structure, allows an existing destination or a new one, and creates a placeholder artefact. Current placeholder formats are HTML, JSON, Markdown and Python; these are deliberately simple starting points, not a claim of fully dynamic generation.</p>
+          <h3>Every creation gets a beginning</h3>
+          <p>A Genesis record captures the origin and intended purpose. The resulting file is ready to evolve: an HTML file can display its own creation record, while JSON can provide structured input for subsequent worker processes. Each creation is also written to the relevant role's evolution telemetry, preserving what was created, where, why and for whom.</p>
+          <div class="case-callout">
+            <p>The administration process takes less than a minute. Activation moves the control plane from thinking about work to establishing work — with identity, purpose and provenance from the outset.</p>
+          </div>
+        </div>
+        <figure class="case-figure screenshot">
+          <img src="activation_screenshot.png" alt="Screenshot showing the Activation assignment process working in the Meta-Architect environment" loading="lazy">
+          <figcaption>Activation in operation: an example of intent being turned into a role-scoped, traceable assignment.</figcaption>
+        </figure>
+      </section>
+
+      <section class="case-section" id="next">
+        <p class="section-kicker">04 · Where next?</p>
+        <h2>Two directions for the next evolution</h2>
+        <div class="case-copy">
+          <h3>From knowledge copies to a shared second brain</h3>
+          <p>Today, discussions receive an isolated working copy of the Knowledge Base. Changes are developed there, pass through a human review gate, and the working copy is purged once resolved. This provides control, but introduces duplication.</p>
+          <p>The intended direction is a single shared Knowledge Base that can serve multiple discussions, with immutable established sections, abstracted changeable sections and lifecycle-based appendable sets. Longer term, this could mature into a shared second brain with distinct long-term knowledge, active working knowledge and project tracking. This is a design direction, not a capability claimed as implemented today.</p>
+          <h3>Role injection — from reusable pattern to working interface</h3>
+          <p>The next major capability is to inject tools, phases and workflows into the interface of the role that needs them: Architect-created tools become available to the Engineer; Engineer-composed workflows become available to the User. The intended experience is a simple, clickable process in the receiving role's interface, without exposing the machinery behind it.</p>
+          <p><strong>One pattern. Many uses.</strong> Reuse, role boundaries and minimal configuration are another application of FaSaP.</p>
+        </div>
+      </section>
+
+      <div class="case-end">
+        <p>Meta-Architect is an ongoing experiment in human-directed, AI-assisted development.</p>
+        <p><strong>Built to help build better.</strong></p>
+      </div>
+      <p class="case-back"><a href="index.html#projects">← Back to the Digital Garden projects</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-left"><span id="clock">00:00:00</span></div>
+    <div class="footer-right">
+      <span>Contact:</span>
+      <a href="mailto:exocore26@gmail.com" id="email-link">exocore26@gmail.com</a>
+      <button type="button" id="copy-btn">Copy</button>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      const clock = document.getElementById('clock');
+      function tick() {
+        clock.textContent = new Date().toLocaleTimeString([], { hour12: false });
+      }
+      tick();
+      setInterval(tick, 1000);
+
+      const copyBtn = document.getElementById('copy-btn');
+      const email = document.getElementById('email-link').textContent.trim();
+      copyBtn.addEventListener('click', function () {
+        function done(label) {
+          copyBtn.textContent = label;
+          setTimeout(function () { copyBtn.textContent = 'Copy'; }, 2000);
+        }
+        if (!navigator.clipboard) { done('Not supported'); return; }
+        navigator.clipboard.writeText(email).then(
+          function () { done('Copied!'); },
+          function () { done('Failed'); }
+        );
+      });
+    })();
+  </script>
+</body>
+</html>
